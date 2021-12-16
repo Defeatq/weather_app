@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://kit.fontawesome.com/896996f1f8.js" crossorigin="anonymous"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <title>Document</title>
+  <link rel="stylesheet" href="../css/style.css" type="text/css">
+</head>
+  <body>
+    <section class="wrapper">
+      <div class="weather">
+        <form class="weather__search">
+          <input type="text" class="search__input font-style" placeholder="Type something">
+          <button type="submit" class="search__icon font-style">
+            <i class="fas fa-search"></i>
+          </button>
+        </form>
+        <div class="weather__content">
+          <div class="weather__tabs">
+            <div class="tabs__body">
+              <div class="tabs__content now font-style">
+                <div class="now__temperature font-style">
+                  14°
+                </div>
+                <div class="now__weather-icon"></div>
+                <div class="now__about">
+                  <div class="now__name font-style">
+                    Aktobe
+                  </div>
+                  <input class="now__like" type="checkbox">
+                </div>
+              </div>
+              <div class="tabs__content font-style details hide">
+                <h3 class="details__header font-style">
+                  Aktobe
+                </h3>
+                <div class="details__parameters">
+                  <div class="details__parameter font-style">
+                    Temperature: <span class="details__parameter-value">
+                      14°
+                    </span>
+                  </div>
+                  <div class="details__parameter font-style">
+                    Feels like: <span class="details__parameter-value">
+                      10°
+                    </span>
+                  </div>
+                  <div class="details__parameter font-style">
+                    Weather: <span class="details__parameter-value">
+                      Clouds
+                    </span>
+                  </div>
+                  <div class="details__parameter font-style">
+                    Sunrise: <span class="details__parameter-value">
+                      03:21
+                    </span>
+                  </div>
+                  <div class="details__parameter font-style">
+                    Sunset: <span class="details__parameter-value">
+                      18:54
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="tabs__content font-style forecast hide">
+                3
+              </div>
+              <nav class="tabs__list">
+                <button data-about="now" class="tabs__link selected font-style"><span>Now</span></button>
+                <button data-about="details" class="tabs__link font-style"><span>Details</span></button>
+                <button data-about="forecast" class="tabs__link font-style"><span>Forecast</span></button>
+              </nav>
+            </div>
+          </div>
+          <div class="weather__history">
+            <h3 class="history__header font-style">
+              Added Locations:
+            </h3>
+            <div class="history__list">
+              <div class="history__element font-style">
+                Amur
+              </div>
+              <div class="history__element font-style">
+                Samara
+              </div>
+              <div class="history__element font-style">
+                Bali
+              </div>
+              <div class="history__element font-style">
+                Dane
+              </div>
+              <div class="history__element font-style">
+                Kilo
+              </div>
+              <div class="history__element font-style">
+                Nur-Sultan
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script type="module" src="../js/script.js"></script>
+  </body>
+</html>
