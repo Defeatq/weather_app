@@ -70,7 +70,7 @@ UI_ELEMENTS.SEARCH_FORM.addEventListener('submit', event => {
     UI_ELEMENTS.TABS.NOW.CITY_NAME.textContent = cityName;
   }), (errorData) => {
     UI_ELEMENTS.TABS.NOW.TEMPERATURE.textContent = '0°';
-    UI_ELEMENTS.TABS.NOW.WEATHER_ICON.style.backgroundImage = `url(icon/icons8-cloud-961.svg)`
+    UI_ELEMENTS.TABS.NOW.WEATHER_ICON.style.backgroundImage = ``
     UI_ELEMENTS.TABS.NOW.CITY_NAME.textContent = errorData.message;
   });
 });
