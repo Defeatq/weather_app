@@ -107,8 +107,10 @@ document.body.addEventListener('click', (checkElem) => {
   const isSavedCity = isPlaceClicked(checkElem, 'history__text');
 
   if (isDeleteButton) {
+    const cityName = checkElem.target.parentElement.firstElementChild.textContent.trim();
+    
     removeFromFavourites(checkElem);
-    changeFavouriteButton(checkElem.target.parentElement.firstElementChild.textContent.trim())
+    changeFavouriteButton(cityName);
   }
 
   if (isFavouriteButton) {
