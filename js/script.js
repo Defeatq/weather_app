@@ -138,15 +138,17 @@ document.body.addEventListener('click', (checkElem) => {
 
     if (isLiked) {
       getCityData(getUrlByCity(cityName))
-        .then(data => locationStorage[cityName] = data);
-
-      UI_ELEMENTS.HISTORY.insertAdjacentHTML('beforeend', `
-        <div class="history__element font-style">
-          <div class="history__text">
-            ${cityName}
-          </div>
-          <button class="history__close"></button>
-        </div>`);
+        .then(data => locationStorage[cityName] = data)
+        .then(() => {
+          UI_ELEMENTS.HISTORY.insertAdjacentHTML('beforeend', `
+            <div class="history__element font-style">
+              <div class="history__text">
+                ${cityName}
+              </div>
+              <button class="history__close"></button>
+            </div>`);
+        })
+        .catch(error => alert(error.message))
     } else {
       const historyList = document.querySelectorAll('.history__text');
       delete locationStorage[cityName];
