@@ -6,6 +6,10 @@ const URLS = {
     SERVER_URL: 'https://api.openweathermap.org/data/2.5/weather',
     API_KEY: 'f660a2fb1e4bad108d6160b7f58c555f&units=metric',
   },
+  PICTURE_URL: {
+    SERVER_URL: 'http://openweathermap.org/img/wn/',
+    SIZE: '@4x.png',
+  },
 }
 
 UI_ELEMENTS.TABS_LINKS.forEach(tab => {
@@ -47,7 +51,7 @@ function getCityData(url) {
 
 function fillNowDisplay(cityName, temperature, weatherIconId = `url(icon/icons8-cloud-961.svg)`) {
   UI_ELEMENTS.TABS.NOW.TEMPERATURE.textContent = temperature + '°';
-  UI_ELEMENTS.TABS.NOW.WEATHER_ICON.style.backgroundImage = `url(http://openweathermap.org/img/wn/${weatherIconId}@2x.png)`;
+  UI_ELEMENTS.TABS.NOW.WEATHER_ICON.style.backgroundImage = `url(${URLS.PICTURE_URL.SERVER_URL}${weatherIconId}${URLS.PICTURE_URL.SIZE})`;
   UI_ELEMENTS.TABS.NOW.CITY_NAME.textContent = cityName;
   changeFavouriteButton(cityName)
 }
@@ -65,6 +69,17 @@ function isPlaceClicked(elem, className) {
   return elem.target.classList.contains(className)
 }
 
+function clearCityList(toRemove, list) {
+  list.forEach((city) => {
+    const currentCityName = city.textContent.trim();
+
+    if (currentCityName === toRemove) {
+      city.parentElement.remove();
+      return
+    }
+  })
+}
+
 function changeFavouriteButton(cityName) {
   if (cityName in locationStorage) {
     UI_ELEMENTS.TABS.NOW.FAVOURITE_BUTTON.checked = true;
@@ -77,7 +92,10 @@ function changeFavouriteButton(cityName) {
 
 function removeFromFavourites(elem) {
   const storageCityItem = elem.target.parentElement;
-  delete locationStorage[storageCityItem.firstElementChild.textContent.trim()];
+  const cityName = storageCityItem.firstElementChild.textContent.trim();
+
+  delete locationStorage[cityName];
+  changeFavouriteButton(cityName);
   storageCityItem.remove();
 }
 
@@ -99,6 +117,8 @@ UI_ELEMENTS.SEARCH_FORM.addEventListener('submit', event => {
     alert(errorData.message)
     fillNowDisplay(errorData.message, '0')
   });
+
+  event.target.firstElementChild.value = '';
 });
 
 document.body.addEventListener('click', (checkElem) => {
@@ -108,7 +128,6 @@ document.body.addEventListener('click', (checkElem) => {
 
   if (isDeleteButton) {
     const cityName = checkElem.target.parentElement.firstElementChild.textContent.trim();
-    
     removeFromFavourites(checkElem);
     changeFavouriteButton(cityName);
   }
@@ -119,11 +138,7 @@ document.body.addEventListener('click', (checkElem) => {
 
     if (isLiked) {
       getCityData(getUrlByCity(cityName))
-        .then(data => {
-          locationStorage[cityName] = data;
-
-          fillNowDisplay(cityName, Math.round(locationStorage[cityName].main.temp), locationStorage[cityName].weather[0].icon);
-        });
+        .then(data => locationStorage[cityName] = data);
 
       UI_ELEMENTS.HISTORY.insertAdjacentHTML('beforeend', `
         <div class="history__element font-style">
@@ -134,21 +149,14 @@ document.body.addEventListener('click', (checkElem) => {
         </div>`);
     } else {
       const historyList = document.querySelectorAll('.history__text');
-
       delete locationStorage[cityName];
-      historyList.forEach((city) => {
-        const currentCityName = city.textContent.trim();
-        if (currentCityName === cityName) {
-          city.parentElement.remove();
-          return
-        }
-      })
+      clearCityList(cityName, historyList)
     }
   }
 
   if (isSavedCity) {
     const cityName = checkElem.target.textContent.trim();
-    const cityData = locationStorage[cityName];
+    const cityData = locationStorage[cityName]
 
     fillNowDisplay(cityData.name, Math.round(cityData.main.temp), cityData.weather[0].icon);
   }
