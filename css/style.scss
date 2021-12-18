@@ -98,7 +98,43 @@ button {
     overflow: visible auto;
   }
   &__element {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin: 10px 0;
+  }
+  &__text {
+    max-width: 75%;
+    cursor: pointer;
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+  }
+  &__close {
+    position: relative;
+    min-width: 20px;
+    height: 20px;
+    cursor: pointer;
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      height: 1px;
+      width: 100%;
+      background-color: #000000;
+      transform: rotate(45deg);
+    }
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      height: 1px;
+      width: 100%;
+      background-color: #000000;
+      transform: rotate(-45deg);
+    }
   }
 }
 
@@ -160,7 +196,7 @@ button {
     max-width: 48%;
     font-size: 24px;
   }
-  &__like {
+  &__favourite {
     position: relative;
     max-width: 48%;
     appearance: none;

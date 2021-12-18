@@ -7,6 +7,8 @@ export const UI_ELEMENTS = {
       TEMPERATURE: document.querySelector('.now__temperature'),
       CITY_NAME: document.querySelector('.now__name'),
       WEATHER_ICON: document.querySelector('.now__weather-icon'),
+      FAVOURITE_BUTTON: document.querySelector('.now__favourite')
     },
   },
+  HISTORY: document.querySelector('.history__list'),
 }

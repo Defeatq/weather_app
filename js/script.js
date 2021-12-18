@@ -1,4 +1,5 @@
 import { UI_ELEMENTS } from "./view.js";
+import { locationStorage } from "./storage.js";
 
 const URLS = {
   WEATHER_URL: {
@@ -39,10 +40,17 @@ function getCityData(url) {
     fetch(url)
       .then(urlBody => urlBody.json())
       .then(urlContent => {
-        checkErrorCode(urlContent.cod) ? resolve(urlContent) : reject(urlContent);
+        checkErrorCode(urlContent.cod) ? resolve(urlContent) : reject(urlContent)
       });
   });
 };
+
+function fillNowDisplay(cityName, temperature, weatherIconId = `url(icon/icons8-cloud-961.svg)`) {
+  UI_ELEMENTS.TABS.NOW.TEMPERATURE.textContent = temperature + '°';
+  UI_ELEMENTS.TABS.NOW.WEATHER_ICON.style.backgroundImage = `url(http://openweathermap.org/img/wn/${weatherIconId}@2x.png)`;
+  UI_ELEMENTS.TABS.NOW.CITY_NAME.textContent = cityName;
+  changeFavouriteButton(cityName)
+}
 
 function getUrlByCity(cityName) {
   const url = `${URLS.WEATHER_URL.SERVER_URL}?q=${cityName}&appid=${URLS.WEATHER_URL.API_KEY}`;
@@ -53,6 +61,26 @@ function checkErrorCode(code) {
   return code === 200
 }
 
+function isPlaceClicked(elem, className) {
+  return elem.target.classList.contains(className)
+}
+
+function changeFavouriteButton(cityName) {
+  if (cityName in locationStorage) {
+    UI_ELEMENTS.TABS.NOW.FAVOURITE_BUTTON.checked = true;
+    return
+  }
+
+  UI_ELEMENTS.TABS.NOW.FAVOURITE_BUTTON.checked = false;
+  return
+}
+
+function removeFromFavourites(elem) {
+  const storageCityItem = elem.target.parentElement;
+  delete locationStorage[storageCityItem.firstElementChild.textContent.trim()];
+  storageCityItem.remove();
+}
+
 UI_ELEMENTS.SEARCH_FORM.addEventListener('submit', event => {
   event.preventDefault();
 
@@ -61,16 +89,65 @@ UI_ELEMENTS.SEARCH_FORM.addEventListener('submit', event => {
   const cityData = getCityData(cityUrl);
 
   cityData.then((data => {
-    const temperature = Math.round(data.main.temp);
     const cityName = data.name;
+    const temperature = Math.round(data.main.temp);
     const weatherIconId = data.weather[0].icon;
-
-    UI_ELEMENTS.TABS.NOW.TEMPERATURE.textContent = temperature + '°';
-    UI_ELEMENTS.TABS.NOW.WEATHER_ICON.style.backgroundImage = `url(http://openweathermap.org/img/wn/${weatherIconId}@2x.png)`;
-    UI_ELEMENTS.TABS.NOW.CITY_NAME.textContent = cityName;
-  }), (errorData) => {
-    UI_ELEMENTS.TABS.NOW.TEMPERATURE.textContent = '0°';
-    UI_ELEMENTS.TABS.NOW.WEATHER_ICON.style.backgroundImage = `url(icon/icons8-cloud-961.svg)`
-    UI_ELEMENTS.TABS.NOW.CITY_NAME.textContent = errorData.message;
+    
+    fillNowDisplay(cityName, temperature, weatherIconId);
+  }))
+  .catch(errorData => {
+    alert(errorData.message)
+    fillNowDisplay(errorData.message, '0')
   });
+});
+
+document.body.addEventListener('click', (checkElem) => {
+  const isDeleteButton = isPlaceClicked(checkElem, 'history__close')
+  const isFavouriteButton = isPlaceClicked(checkElem, 'now__favourite');
+  const isSavedCity = isPlaceClicked(checkElem, 'history__text');
+
+  if (isDeleteButton) {
+    removeFromFavourites(checkElem);
+    changeFavouriteButton(checkElem.target.parentElement.firstElementChild.textContent.trim())
+  }
+
+  if (isFavouriteButton) {
+    const isLiked = checkElem.target.checked;
+    const cityName = checkElem.target.parentElement.firstElementChild.textContent.trim();
+
+    if (isLiked) {
+      getCityData(getUrlByCity(cityName))
+        .then(data => {
+          locationStorage[cityName] = data;
+
+          fillNowDisplay(cityName, Math.round(locationStorage[cityName].main.temp), locationStorage[cityName].weather[0].icon);
+        });
+
+      UI_ELEMENTS.HISTORY.insertAdjacentHTML('beforeend', `
+        <div class="history__element font-style">
+          <div class="history__text">
+            ${cityName}
+          </div>
+          <button class="history__close"></button>
+        </div>`);
+    } else {
+      const historyList = document.querySelectorAll('.history__text');
+
+      delete locationStorage[cityName];
+      historyList.forEach((city) => {
+        const currentCityName = city.textContent.trim();
+        if (currentCityName === cityName) {
+          city.parentElement.remove();
+          return
+        }
+      })
+    }
+  }
+
+  if (isSavedCity) {
+    const cityName = checkElem.target.textContent.trim();
+    const cityData = locationStorage[cityName];
+
+    fillNowDisplay(cityData.name, Math.round(cityData.main.temp), cityData.weather[0].icon);
+  }
 });
