@@ -1,5 +1,5 @@
 import { UI_ELEMENTS, renderNow, setStateFavourite } from "./view.js";
-import { locationStorage } from "./storage.js";
+import { favouriteCities } from "./storage.js";
 
 const URLS = {
   WEATHER_URL: {
@@ -42,13 +42,21 @@ function clearCityList(toRemove, list) {
   })
 }
 
+function deleteCityFromFavList(cityName) {
+  const cityIdStorage = favouriteCities.indexOf(cityName);
+  favouriteCities.splice(cityIdStorage, 1);
+}
+
 function removeFromFavourites(elem) {
   const storageCityItem = elem.target.parentElement;
   const cityName = storageCityItem.firstElementChild.textContent.trim();
 
-  renderNow(locationStorage[cityName].name, Math.round(locationStorage[cityName].main.temp), locationStorage[cityName].weather[0].icon)
-  delete locationStorage[cityName];
-  storageCityItem.remove();
+  getCityData(getUrlByCity(cityName))
+    .then(data => {
+      deleteCityFromFavList(cityName);
+      renderNow(data.name, Math.round(data.main.temp), data.weather[0].icon);
+      storageCityItem.remove();
+    });
 }
 
 UI_ELEMENTS.SEARCH_FORM.addEventListener('submit', event => {
@@ -79,9 +87,7 @@ document.body.addEventListener('click', (checkElem) => {
   const isSavedCity = isPlaceClicked(checkElem, 'history__text');
 
   if (isDeleteButton) {
-    const cityName = checkElem.target.parentElement.textContent.trim();
     removeFromFavourites(checkElem);
-    setStateFavourite(cityName);
   }
 
   if (isFavouriteButton) {
@@ -89,29 +95,28 @@ document.body.addEventListener('click', (checkElem) => {
     const cityName = checkElem.target.parentElement.firstElementChild.textContent.trim();
 
     if (isLiked) {
-      getCityData(getUrlByCity(cityName))
-        .then(data => locationStorage[cityName] = data)
-        .then(() => {
-          UI_ELEMENTS.HISTORY.insertAdjacentHTML('beforeend', `
+      favouriteCities.push(cityName);
+      
+      UI_ELEMENTS.HISTORY.insertAdjacentHTML('beforeend', `
             <div class="history__element font-style">
               <div class="history__text">
                 ${cityName}
               </div>
               <button class="history__close"></button>
             </div>`);
-        })
-        .catch(error => alert(error.message))
     } else {
       const historyList = document.querySelectorAll('.history__text');
-      delete locationStorage[cityName];
+      deleteCityFromFavList(cityName);
       clearCityList(cityName, historyList)
     }
   }
-
+  console.log(favouriteCities)
   if (isSavedCity) {
     const cityName = checkElem.target.textContent.trim();
-    const cityData = locationStorage[cityName]
 
-    renderNow(cityData.name, Math.round(cityData.main.temp), cityData.weather[0].icon);
+    getCityData(getUrlByCity(cityName))
+      .then(data => {
+        renderNow(data.name, Math.round(data.main.temp), data.weather[0].icon);
+      })
   }
 });

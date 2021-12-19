@@ -1,1 +1,1 @@
-export const locationStorage = {};
+export const favouriteCities = [];

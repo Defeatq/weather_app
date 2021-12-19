@@ -1,4 +1,4 @@
-import { locationStorage } from "./storage.js";
+import { favouriteCities } from "./storage.js";
 
 export const UI_ELEMENTS = {
   TABS_LINKS: document.querySelectorAll('.tabs__link'),
@@ -25,11 +25,7 @@ export function renderNow(cityName, temperature, weatherIconId = `url(icon/icons
 }
 
 export function setStateFavourite(cityName) {
-  if (cityName in locationStorage) {
-    UI_ELEMENTS.TABS.NOW.FAVOURITE_BUTTON.checked = true;
-    return
-  }
+  const isCityInFavList = favouriteCities.includes(cityName)
 
-  UI_ELEMENTS.TABS.NOW.FAVOURITE_BUTTON.checked = false;
-  return
+  isCityInFavList ? UI_ELEMENTS.TABS.NOW.FAVOURITE_BUTTON.checked = true : UI_ELEMENTS.TABS.NOW.FAVOURITE_BUTTON.checked = false;
 }
