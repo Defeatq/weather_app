@@ -1,3 +1,5 @@
+import { locationStorage } from "./storage.js";
+
 export const UI_ELEMENTS = {
   TABS_LINKS: document.querySelectorAll('.tabs__link'),
   TABS_CONTENT: document.querySelectorAll('.tabs__content'),
@@ -11,4 +13,23 @@ export const UI_ELEMENTS = {
     },
   },
   HISTORY: document.querySelector('.history__list'),
+}
+
+const PICTURE_URL = 'http://openweathermap.org/img/wn/';
+
+export function renderNow(cityName, temperature, weatherIconId = `url(icon/icons8-cloud-961.svg)`) {
+  setStateFavourite(cityName)
+  UI_ELEMENTS.TABS.NOW.TEMPERATURE.textContent = temperature + '°';
+  UI_ELEMENTS.TABS.NOW.WEATHER_ICON.style.backgroundImage = `url(${PICTURE_URL}${weatherIconId}@4x.png)`;
+  UI_ELEMENTS.TABS.NOW.CITY_NAME.textContent = cityName;
+}
+
+export function setStateFavourite(cityName) {
+  if (cityName in locationStorage) {
+    UI_ELEMENTS.TABS.NOW.FAVOURITE_BUTTON.checked = true;
+    return
+  }
+
+  UI_ELEMENTS.TABS.NOW.FAVOURITE_BUTTON.checked = false;
+  return
 }
