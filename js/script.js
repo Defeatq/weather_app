@@ -1,31 +1,8 @@
-import { UI_ELEMENTS, renderNow, setStateFavourite } from "./view.js";
-import { favouriteCities } from "./storage.js";
+import { UI_ELEMENTS, renderNow, createFavouriteElement, setStateFavourite } from "./view.js";
+import { favouriteCities, STORAGE_ACTIONS } from "./storage.js";
+import { getUrlByCity, getCityData } from './async_actions.js';
 
-const URLS = {
-  WEATHER_URL: {
-    SERVER_URL: 'https://api.openweathermap.org/data/2.5/weather',
-    API_KEY: 'f660a2fb1e4bad108d6160b7f58c555f&units=metric',
-  },
-}
-
-function getCityData(url) {
-  return new Promise((resolve, reject) => {
-    fetch(url)
-      .then(urlBody => urlBody.json())
-      .then(urlContent => {
-        checkErrorCode(urlContent.cod) ? resolve(urlContent) : reject(urlContent)
-      });
-  });
-};
-
-function getUrlByCity(cityName) {
-  const url = `${URLS.WEATHER_URL.SERVER_URL}?q=${cityName}&appid=${URLS.WEATHER_URL.API_KEY}`;
-  return url
-}
-
-function checkErrorCode(code) {
-  return code === 200
-}
+STORAGE_ACTIONS.loadStorage();
 
 function isPlaceClicked(elem, className) {
   return elem.target.classList.contains(className)
@@ -45,6 +22,8 @@ function clearCityList(toRemove, list) {
 function deleteCityFromFavList(cityName) {
   const cityIdStorage = favouriteCities.indexOf(cityName);
   favouriteCities.splice(cityIdStorage, 1);
+
+  STORAGE_ACTIONS.saveFavouriteCities(favouriteCities);
 }
 
 function removeFromFavourites(elem) {
@@ -72,6 +51,7 @@ UI_ELEMENTS.SEARCH_FORM.addEventListener('submit', event => {
     const weatherIconId = data.weather[0].icon;
     
     renderNow(cityName, temperature, weatherIconId);
+    STORAGE_ACTIONS.setCurrentCity(cityName);
   }))
   .catch(errorData => {
     alert(errorData.message)
@@ -96,27 +76,22 @@ document.body.addEventListener('click', (checkElem) => {
 
     if (isLiked) {
       favouriteCities.push(cityName);
-      
-      UI_ELEMENTS.HISTORY.insertAdjacentHTML('beforeend', `
-            <div class="history__element font-style">
-              <div class="history__text">
-                ${cityName}
-              </div>
-              <button class="history__close"></button>
-            </div>`);
+      STORAGE_ACTIONS.saveFavouriteCities(favouriteCities);
+      UI_ELEMENTS.HISTORY.insertAdjacentHTML('beforeend', createFavouriteElement(cityName));
     } else {
       const historyList = document.querySelectorAll('.history__text');
       deleteCityFromFavList(cityName);
       clearCityList(cityName, historyList)
     }
   }
-  console.log(favouriteCities)
+
   if (isSavedCity) {
     const cityName = checkElem.target.textContent.trim();
 
     getCityData(getUrlByCity(cityName))
-      .then(data => {
-        renderNow(data.name, Math.round(data.main.temp), data.weather[0].icon);
+      .then(cityData => {
+        renderNow(cityData.name, Math.round(cityData.main.temp), cityData.weather[0].icon);
+        STORAGE_ACTIONS.setCurrentCity(cityData.name);
       })
   }
 });

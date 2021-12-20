@@ -1,4 +1,5 @@
 import { favouriteCities } from "./storage.js";
+import { URLS } from "./urls.js";
 
 export const UI_ELEMENTS = {
   TABS_LINKS: document.querySelectorAll('.tabs__link'),
@@ -15,12 +16,10 @@ export const UI_ELEMENTS = {
   HISTORY: document.querySelector('.history__list'),
 }
 
-const PICTURE_URL = 'http://openweathermap.org/img/wn/';
-
 export function renderNow(cityName, temperature, weatherIconId = `url(icon/icons8-cloud-961.svg)`) {
   setStateFavourite(cityName)
   UI_ELEMENTS.TABS.NOW.TEMPERATURE.textContent = temperature + '°';
-  UI_ELEMENTS.TABS.NOW.WEATHER_ICON.style.backgroundImage = `url(${PICTURE_URL}${weatherIconId}@4x.png)`;
+  UI_ELEMENTS.TABS.NOW.WEATHER_ICON.style.backgroundImage = `url(${URLS.ICON_URL}${weatherIconId}@4x.png)`;
   UI_ELEMENTS.TABS.NOW.CITY_NAME.textContent = cityName;
 }
 
@@ -28,4 +27,13 @@ export function setStateFavourite(cityName) {
   const isCityInFavList = favouriteCities.includes(cityName)
 
   isCityInFavList ? UI_ELEMENTS.TABS.NOW.FAVOURITE_BUTTON.checked = true : UI_ELEMENTS.TABS.NOW.FAVOURITE_BUTTON.checked = false;
+}
+
+export function createFavouriteElement(cityName) {
+  return `<div class="history__element font-style">
+            <div class="history__text">
+              ${cityName}
+            </div>
+            <button class="history__close"></button>
+          </div>`
 }
