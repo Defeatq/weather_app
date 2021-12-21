@@ -1,5 +1,14 @@
 import { favouriteCities } from "./storage.js";
 import { URLS } from "./urls.js";
+import { convertUnixTime } from "./time_converter.js";
+
+const WEATHER_PROPERTIES = {
+  TEMPERATURE: 'Temperature',
+  FEELS_LIKE: 'Feels like',
+  WEATHER: 'Weather',
+  SUNRISE: 'Sunrise',
+  SUNSET: 'Sunset',
+}
 
 export const UI_ELEMENTS = {
   TABS_LINKS: document.querySelectorAll('.tabs__link'),
@@ -11,6 +20,10 @@ export const UI_ELEMENTS = {
       CITY_NAME: document.querySelector('.now__name'),
       WEATHER_ICON: document.querySelector('.now__weather-icon'),
       FAVOURITE_BUTTON: document.querySelector('.now__favourite')
+    },
+    DETAILS: {
+      CITY_NAME: document.querySelector('.details__header'),
+      WEATHER_PROPERTIES: document.querySelectorAll('.details__parameter'),
     },
   },
   HISTORY: document.querySelector('.history__list'),
@@ -36,4 +49,41 @@ export function createFavouriteElement(cityName) {
             </div>
             <button class="history__close"></button>
           </div>`
+}
+
+export function createWeatherProperty(propertyValue) {
+  return `<span class="details__parameter-value">
+            ${propertyValue}
+          </span>`
+}
+
+export function renderDetails(cityName, temp, feel, weather, sunrise, sunset) {
+  UI_ELEMENTS.TABS.DETAILS.CITY_NAME.textContent = cityName;
+
+  UI_ELEMENTS.TABS.DETAILS.WEATHER_PROPERTIES.forEach(property => {
+    const propertyName = Array.from(property.childNodes)
+      .filter(propertyText => propertyText.nodeType === 3)
+      .map(propertyName => propertyName.textContent.trim())
+      .join('');
+
+    property.textContent = propertyName;
+
+    switch (propertyName.slice(0, -1)) {
+      case WEATHER_PROPERTIES.TEMPERATURE:
+        property.insertAdjacentHTML('beforeend', createWeatherProperty(temp + '°'))
+        return
+      case WEATHER_PROPERTIES.FEELS_LIKE:
+        property.insertAdjacentHTML('beforeend', createWeatherProperty(feel + '°'))
+        return
+      case WEATHER_PROPERTIES.WEATHER:
+        property.insertAdjacentHTML('beforeend', createWeatherProperty(weather))
+        return
+      case WEATHER_PROPERTIES.SUNRISE:
+        property.insertAdjacentHTML('beforeend', createWeatherProperty(convertUnixTime(sunrise)))
+        return
+      case WEATHER_PROPERTIES.SUNSET:
+        property.insertAdjacentHTML('beforeend', createWeatherProperty(convertUnixTime(sunset)))
+        return
+    }
+  })
 }

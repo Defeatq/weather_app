@@ -1,4 +1,4 @@
-import { UI_ELEMENTS, renderNow, createFavouriteElement, setStateFavourite } from "./view.js";
+import { UI_ELEMENTS, renderNow, createFavouriteElement, setStateFavourite, renderDetails } from "./view.js";
 import { favouriteCities, STORAGE_ACTIONS } from "./storage.js";
 import { getUrlByCity, getCityData } from './async_actions.js';
 
@@ -34,6 +34,7 @@ function removeFromFavourites(elem) {
     .then(data => {
       deleteCityFromFavList(cityName);
       renderNow(data.name, Math.round(data.main.temp), data.weather[0].icon);
+      renderDetails(data.name, Math.round(data.main.temp), Math.round(data.main['feels_like']), data.weather[0].main, data.sys.sunrise, data.sys.sunset);
       storageCityItem.remove();
     });
 }
@@ -49,13 +50,19 @@ UI_ELEMENTS.SEARCH_FORM.addEventListener('submit', event => {
     const cityName = data.name;
     const temperature = Math.round(data.main.temp);
     const weatherIconId = data.weather[0].icon;
+    const feelsLike = Math.round(data.main['feels_like']);
+    const weather = data.weather[0].main;
+    const sunrise = data.sys.sunrise; 
+    const sunset = data.sys.sunset;
     
     renderNow(cityName, temperature, weatherIconId);
+    renderDetails(cityName, temperature, feelsLike, weather, sunrise, sunset);
     STORAGE_ACTIONS.setCurrentCity(cityName);
   }))
   .catch(errorData => {
     alert(errorData.message)
-    renderNow(errorData.message, '0')
+    renderNow(errorData.message, '0');
+    renderDetails(errorData.message)
   });
 
   event.target.firstElementChild.value = '';
@@ -91,6 +98,7 @@ document.body.addEventListener('click', (checkElem) => {
     getCityData(getUrlByCity(cityName))
       .then(cityData => {
         renderNow(cityData.name, Math.round(cityData.main.temp), cityData.weather[0].icon);
+        renderDetails(cityData.name, Math.round(cityData.main.temp), Math.round(cityData.main['feels_like']), cityData.weather[0].main, cityData.sys.sunrise, cityData.sys.sunset);
         STORAGE_ACTIONS.setCurrentCity(cityData.name);
       })
   }

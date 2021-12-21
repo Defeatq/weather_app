@@ -1,4 +1,4 @@
-import { UI_ELEMENTS, createFavouriteElement, renderNow } from './view.js';
+import { UI_ELEMENTS, createFavouriteElement, renderNow, renderDetails, createWeatherProperty } from './view.js';
 import { getUrlByCity, getCityData } from './async_actions.js';
 
 export const favouriteCities = [];
@@ -25,6 +25,7 @@ export const STORAGE_ACTIONS = {
         });
         
         renderNow(cityData.name, Math.round(cityData.main.temp), cityData.weather[0].icon);
+        renderDetails(cityData.name, Math.round(cityData.main.temp), Math.round(cityData.main['feels_like']), cityData.weather[0].main, cityData.sys.sunrise, cityData.sys.sunset);
       })
   }
 }
