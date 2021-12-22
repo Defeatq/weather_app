@@ -27,7 +27,7 @@ export const STORAGE_ACTIONS = {
         
         renderNow(cityData.name, Math.round(cityData.main.temp), cityData.weather[0].icon);
         renderDetails(cityData.name, Math.round(cityData.main.temp), Math.round(cityData.main['feels_like']), cityData.weather[0].main, cityData.sys.sunrise, cityData.sys.sunset);
+        UI_ELEMENTS.LOADER.style.display = 'none';
       })
-      .then(UI_ELEMENTS.LOADER.style.display = 'none')
   }
 }
