@@ -21,6 +21,32 @@ button {
   background-color: #FFFFFF;
 }
 
+body {
+  position: relative;
+}
+
+.preloader {
+  z-index: 50000;
+  min-width: 100%;
+  min-height: 100%;
+  position: absolute;
+  background-color: #FFFFFF;
+  &__circle {
+    border: 8px solid #f3f3f3; /* Light grey */
+    border-top: 8px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    margin: calc(25% - 60px) auto;
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 .font-style {
   font-family: 'Roboto', sans-serif;
   color: #000000;
@@ -234,6 +260,10 @@ button {
     margin: 10px 0;
     font-size: 24px;
   }
+}
+
+.forecast {
+  
 }
 
 .selected {

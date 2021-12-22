@@ -17,6 +17,7 @@ export const STORAGE_ACTIONS = {
     return localStorage.getItem('currentCity')
   },
   loadStorage: function() {
+    UI_ELEMENTS.LOADER.style.display = 'block';
     getCityData(getUrlByCity(STORAGE_ACTIONS.getCurrentCity()))
       .then(cityData => {
         this.getFavouriteCities().forEach(city => {
@@ -27,5 +28,6 @@ export const STORAGE_ACTIONS = {
         renderNow(cityData.name, Math.round(cityData.main.temp), cityData.weather[0].icon);
         renderDetails(cityData.name, Math.round(cityData.main.temp), Math.round(cityData.main['feels_like']), cityData.weather[0].main, cityData.sys.sunrise, cityData.sys.sunset);
       })
+      .then(UI_ELEMENTS.LOADER.style.display = 'none')
   }
 }

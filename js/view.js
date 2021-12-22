@@ -11,6 +11,7 @@ const WEATHER_PROPERTIES = {
 }
 
 export const UI_ELEMENTS = {
+  LOADER: document.querySelector('.preloader'),
   TABS_LINKS: document.querySelectorAll('.tabs__link'),
   TABS_CONTENT: document.querySelectorAll('.tabs__content'),
   SEARCH_FORM: document.querySelector('.weather__search'),
