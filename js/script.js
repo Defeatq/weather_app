@@ -2,6 +2,7 @@ import { UI_ELEMENTS, renderNow, createFavouriteElement, setStateFavourite, rend
 import { favouriteCities, STORAGE_ACTIONS } from "./storage.js";
 import { getUrlByCity, getCityData } from './requests.js';
 
+console.log(STORAGE_ACTIONS.getCurrentCity())
 STORAGE_ACTIONS.loadStorage();
 
 function getClickedPlace(elem, className) {
