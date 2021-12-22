@@ -19,12 +19,8 @@ export const STORAGE_ACTIONS = {
   loadStorage: function() {
     console.log(STORAGE_ACTIONS.getCurrentCity())
     UI_ELEMENTS.LOADER.style.display = 'block';
-    // if (STORAGE_ACTIONS.getCurrentCity() === null) {
-    //   UI_ELEMENTS.LOADER.style.display = 'none';
-    //   return
-    // }
-
-    getCityData(getUrlByCity(STORAGE_ACTIONS.getCurrentCity()))
+    if (STORAGE_ACTIONS.getCurrentCity() !== null) {
+      getCityData(getUrlByCity(STORAGE_ACTIONS.getCurrentCity()))
       .then(cityData => {
         this.getFavouriteCities().forEach(city => {
           favouriteCities.push(city);
@@ -35,5 +31,8 @@ export const STORAGE_ACTIONS = {
         renderDetails(cityData.name, Math.round(cityData.main.temp), Math.round(cityData.main['feels_like']), cityData.weather[0].main, cityData.sys.sunrise, cityData.sys.sunset);
         UI_ELEMENTS.LOADER.style.display = 'none';
       })
+    } else {
+      UI_ELEMENTS.LOADER.style.display = 'none';
+    }
   }
 }
