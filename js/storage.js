@@ -18,11 +18,11 @@ export const STORAGE_ACTIONS = {
   },
   loadStorage: function() {
     UI_ELEMENTS.LOADER.style.display = 'block';
-    if (STORAGE_ACTIONS.getCurrentCity === null) {
+    if (STORAGE_ACTIONS.getCurrentCity() === null) {
       UI_ELEMENTS.LOADER.style.display = 'none';
       return
     }
-    
+
     getCityData(getUrlByCity(STORAGE_ACTIONS.getCurrentCity()))
       .then(cityData => {
         this.getFavouriteCities().forEach(city => {
