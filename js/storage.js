@@ -17,11 +17,12 @@ export const STORAGE_ACTIONS = {
     return localStorage.getItem('currentCity')
   },
   loadStorage: function() {
+    console.log(STORAGE_ACTIONS.getCurrentCity())
     UI_ELEMENTS.LOADER.style.display = 'block';
-    if (STORAGE_ACTIONS.getCurrentCity() === null) {
-      UI_ELEMENTS.LOADER.style.display = 'none';
-      return
-    }
+    // if (STORAGE_ACTIONS.getCurrentCity() === null) {
+    //   UI_ELEMENTS.LOADER.style.display = 'none';
+    //   return
+    // }
 
     getCityData(getUrlByCity(STORAGE_ACTIONS.getCurrentCity()))
       .then(cityData => {
