@@ -30,6 +30,17 @@ export const UI_ELEMENTS = {
   HISTORY: document.querySelector('.history__list'),
 }
 
+export function clearCityList(toRemove, list) {
+  list.forEach((city) => {
+    const currentCityName = city.textContent.trim();
+
+    if (currentCityName === toRemove) {
+      city.parentElement.remove();
+      return
+    }
+  })
+}
+
 export function renderNow(cityName, temperature, weatherIconId = `url(icon/icons8-cloud-961.svg)`) {
   setStateFavourite(cityName)
   UI_ELEMENTS.TABS.NOW.TEMPERATURE.textContent = temperature + '°';

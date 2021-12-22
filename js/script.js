@@ -1,22 +1,11 @@
-import { UI_ELEMENTS, renderNow, createFavouriteElement, setStateFavourite, renderDetails } from "./view.js";
+import { UI_ELEMENTS, renderNow, createFavouriteElement, setStateFavourite, renderDetails, clearCityList } from "./view.js";
 import { favouriteCities, STORAGE_ACTIONS } from "./storage.js";
-import { getUrlByCity, getCityData } from './async_actions.js';
+import { getUrlByCity, getCityData } from './requests.js';
 
 STORAGE_ACTIONS.loadStorage();
 
-function isPlaceClicked(elem, className) {
+function getClickedPlace(elem, className) {
   return elem.target.classList.contains(className)
-}
-
-function clearCityList(toRemove, list) {
-  list.forEach((city) => {
-    const currentCityName = city.textContent.trim();
-
-    if (currentCityName === toRemove) {
-      city.parentElement.remove();
-      return
-    }
-  })
 }
 
 function deleteCityFromFavList(cityName) {
@@ -69,9 +58,9 @@ UI_ELEMENTS.SEARCH_FORM.addEventListener('submit', event => {
 });
 
 document.body.addEventListener('click', (checkElem) => {
-  const isDeleteButton = isPlaceClicked(checkElem, 'history__close')
-  const isFavouriteButton = isPlaceClicked(checkElem, 'now__favourite');
-  const isSavedCity = isPlaceClicked(checkElem, 'history__text');
+  const isDeleteButton = getClickedPlace(checkElem, 'history__close')
+  const isFavouriteButton = getClickedPlace(checkElem, 'now__favourite');
+  const isSavedCity = getClickedPlace(checkElem, 'history__text');
 
   if (isDeleteButton) {
     removeFromFavourites(checkElem);

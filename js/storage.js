@@ -1,5 +1,5 @@
 import { UI_ELEMENTS, createFavouriteElement, renderNow, renderDetails, createWeatherProperty } from './view.js';
-import { getUrlByCity, getCityData } from './async_actions.js';
+import { getUrlByCity, getCityData } from './requests.js';
 
 export const favouriteCities = [];
 
