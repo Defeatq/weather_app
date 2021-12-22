@@ -6,6 +6,9 @@ export function getCityData(url) {
       .then(urlBody => urlBody.json())
       .then(urlContent => {
         checkErrorCode(urlContent.cod) ? resolve(urlContent) : reject(urlContent)
+      })
+      .catch(error => {
+        alert(error.message)
       });
   });
 };
@@ -16,5 +19,12 @@ export function getUrlByCity(cityName) {
 }
 
 export function checkErrorCode(code) {
-  return code === 200
+  switch(code) {
+    case 200:
+      return true
+    case 404:
+      return false
+    default:
+      return new Error('Unrecognized error')
+  }
 }
