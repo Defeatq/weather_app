@@ -260,6 +260,71 @@ body {
   font-size: 24px;
 }
 
+.forecast {
+  padding: 0 17px;
+}
+.forecast__header {
+  margin: 32px 0 5px 0;
+  font-size: 24px;
+  font-weight: normal;
+}
+.forecast__timetable {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.forecast__card {
+  overflow: visible auto;
+  width: 100%;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 7px 0;
+  padding: 5px 10px 10px;
+  border: 1px solid black;
+}
+.forecast__card .font-style {
+  font-size: 18px;
+}
+
+.card__moment {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.card__date {
+  max-width: 47%;
+}
+.card__time {
+  max-width: 47%;
+}
+.card__details {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.card__properties {
+  max-width: 65%;
+}
+.card__parameter {
+  width: 100%;
+}
+.card__weather {
+  max-width: 30%;
+}
+.card__icon {
+  max-width: 31px;
+  max-height: 31px;
+  min-width: 30px;
+  min-height: 30px;
+  background-image: url(../icon/icons8-rain-961.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
 .selected {
   background-color: #000000;
   color: #FFFFFF;
