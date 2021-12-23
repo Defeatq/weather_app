@@ -18,6 +18,11 @@ export function getUrlByCity(cityName) {
   return url
 }
 
+export function getForecastByCity(cityName) {
+  const url = `${URLS.FORECAST_URL.SERVER_URL}?q=${cityName}&appid=${URLS.FORECAST_URL.API_KEY}`;
+  return url
+}
+
 export function checkErrorCode(code) {
   switch(code) {
     case 200:

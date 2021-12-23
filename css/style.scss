@@ -316,6 +316,10 @@ body {
   }
   &__weather {
     max-width: 30%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: end;
   }
   &__icon {
     max-width: 31px;

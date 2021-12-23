@@ -1,5 +1,5 @@
-import { UI_ELEMENTS, createFavouriteElement, renderNow, renderDetails, createWeatherProperty } from './view.js';
-import { getUrlByCity, getCityData } from './requests.js';
+import { UI_ELEMENTS, createFavouriteElement, renderNow, renderDetails, createWeatherProperty, renderForecast } from './view.js';
+import { getUrlByCity, getCityData, getForecastByCity } from './requests.js';
 
 export const favouriteCities = [];
 
@@ -19,7 +19,7 @@ export const STORAGE_ACTIONS = {
   loadStorage: function() {
     UI_ELEMENTS.LOADER.style.display = 'block';
     const isPrevCityExist = STORAGE_ACTIONS.getCurrentCity() !== null;
-    
+
     if (!isPrevCityExist) {
       UI_ELEMENTS.LOADER.style.display = 'none';
       return
@@ -36,5 +36,9 @@ export const STORAGE_ACTIONS = {
         renderDetails(cityData.name, Math.round(cityData.main.temp), Math.round(cityData.main['feels_like']), cityData.weather[0].main, cityData.sys.sunrise, cityData.sys.sunset);
         UI_ELEMENTS.LOADER.style.display = 'none';
       })
+      .then(getCityData(getForecastByCity(STORAGE_ACTIONS.getCurrentCity()))
+        .then(cityData => {
+          renderForecast(cityData.city.name, cityData.list)
+        }))
   }
 }

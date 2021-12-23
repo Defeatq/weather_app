@@ -26,6 +26,10 @@ export const UI_ELEMENTS = {
       CITY_NAME: document.querySelector('.details__header'),
       WEATHER_PROPERTIES: document.querySelectorAll('.details__parameter'),
     },
+    FORECAST: {
+      CITY_NAME: document.querySelector('.forecast__header'),
+      TIMETABLE: document.querySelector('.forecast__timetable'),
+    },
   },
   HISTORY: document.querySelector('.history__list'),
 }
@@ -69,6 +73,35 @@ export function createWeatherProperty(propertyValue) {
           </span>`
 }
 
+function createForecastCard(date, temp, feel, weather, weatherIconId) {
+  const dateInfo = convertUnixTime(date)
+
+  return `<div class="forecast__card">
+            <div class="card__moment">
+              <div class="card__date font-style">
+                ${dateInfo.day} ${dateInfo.month}
+              </div>
+              <div class="card__time font-style">
+                ${dateInfo.hours}:${dateInfo.minutes}
+              </div>
+            </div>
+            <div class="card__details">
+              <div class="card__properties">
+                <div class="card__parameter font-style">
+                  Temperature: ${temp}°
+                </div>
+                <div class="card__parameter font-style">
+                  Feels like: ${feel}°
+                </div>
+              </div>
+              <div class="card__weather font-style">
+                ${weather}
+                <div class="card__icon" style="background-image: url(${URLS.ICON_URL}${weatherIconId}@4x.png)"></div>
+              </div>
+            </div>
+          </div>`
+}
+
 export function renderDetails(cityName, temp, feel, weather, sunrise, sunset) {
   UI_ELEMENTS.TABS.DETAILS.CITY_NAME.textContent = cityName;
 
@@ -91,11 +124,21 @@ export function renderDetails(cityName, temp, feel, weather, sunrise, sunset) {
         property.insertAdjacentHTML('beforeend', createWeatherProperty(weather))
         return
       case WEATHER_PROPERTIES.SUNRISE:
-        property.insertAdjacentHTML('beforeend', createWeatherProperty(convertUnixTime(sunrise)))
+        property.insertAdjacentHTML('beforeend', createWeatherProperty(`${convertUnixTime(sunrise).hours}:${convertUnixTime(sunrise).minutes}`))
         return
       case WEATHER_PROPERTIES.SUNSET:
-        property.insertAdjacentHTML('beforeend', createWeatherProperty(convertUnixTime(sunset)))
+        property.insertAdjacentHTML('beforeend', createWeatherProperty(`${convertUnixTime(sunset).hours}:${convertUnixTime(sunset).minutes}`))
         return
     }
+  })
+}
+
+export function renderForecast(cityName, forecastList) {
+  UI_ELEMENTS.TABS.FORECAST.CITY_NAME.textContent = cityName;
+  UI_ELEMENTS.TABS.FORECAST.TIMETABLE.textContent = '';
+
+  forecastList.forEach(forecast => {
+    const forecastCard = createForecastCard(forecast.dt, Math.round(forecast.main.temp), Math.round(forecast.main['feels_like']), forecast.weather[0].main, forecast.weather[0].icon);
+    UI_ELEMENTS.TABS.FORECAST.TIMETABLE.insertAdjacentHTML('beforeend', forecastCard);
   })
 }

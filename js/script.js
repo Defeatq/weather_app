@@ -1,6 +1,6 @@
-import { UI_ELEMENTS, renderNow, createFavouriteElement, setStateFavourite, renderDetails, clearCityList } from "./view.js";
+import { UI_ELEMENTS, renderNow, createFavouriteElement, setStateFavourite, renderDetails, clearCityList, renderForecast } from "./view.js";
 import { favouriteCities, STORAGE_ACTIONS } from "./storage.js";
-import { getUrlByCity, getCityData } from './requests.js';
+import { getUrlByCity, getCityData, getForecastByCity } from './requests.js';
 
 STORAGE_ACTIONS.loadStorage();
 
@@ -32,8 +32,8 @@ UI_ELEMENTS.SEARCH_FORM.addEventListener('submit', event => {
   event.preventDefault();
 
   const inputValue = event.target.firstElementChild.value;
-  const cityUrl = getUrlByCity(inputValue);
-  const cityData = getCityData(cityUrl);
+  const cityData = getCityData(getUrlByCity(inputValue));
+  const forecastData = getCityData(getForecastByCity(inputValue));
 
   cityData.then((data => {
     const cityName = data.name;
@@ -49,10 +49,18 @@ UI_ELEMENTS.SEARCH_FORM.addEventListener('submit', event => {
     STORAGE_ACTIONS.setCurrentCity(cityName);
   }))
   .catch(errorData => {
-    alert(errorData.message)
+    alert(errorData.message);
     renderNow(errorData.message, '0');
-    renderDetails(errorData.message)
+    renderDetails(errorData.message);
   });
+
+  forecastData.then(cityData => {
+    renderForecast(cityData.city.name, cityData.list);
+  })
+  .catch(errorData => {
+    alert(errorData.message);
+    renderForecast(errorData.message, []);
+  })
 
   event.target.firstElementChild.value = '';
 });
@@ -89,6 +97,11 @@ document.body.addEventListener('click', (checkElem) => {
         renderNow(cityData.name, Math.round(cityData.main.temp), cityData.weather[0].icon);
         renderDetails(cityData.name, Math.round(cityData.main.temp), Math.round(cityData.main['feels_like']), cityData.weather[0].main, cityData.sys.sunrise, cityData.sys.sunset);
         STORAGE_ACTIONS.setCurrentCity(cityData.name);
+      })
+
+    getCityData(getForecastByCity(cityName))
+      .then(cityData => {
+        renderForecast(cityData.city.name, cityData.list)
       })
   }
 });
