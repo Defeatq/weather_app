@@ -4,6 +4,8 @@ import { getUrlByCity, getCityData, getForecastByCity } from './requests.js';
 
 STORAGE_ACTIONS.loadStorage();
 
+const ERROR_MESSAGES = ['No such city', 'City name'];
+
 function getClickedPlace(elem, className) {
   return elem.target.classList.contains(className)
 }
@@ -49,7 +51,7 @@ UI_ELEMENTS.SEARCH_FORM.addEventListener('submit', event => {
   }))
   .catch(errorData => {
     alert(errorData.message);
-    renderNow(new Error('No such city'), '0');
+    renderNow(new Error('No such city'));
     renderDetails(new Error('No such city'));
   });
 
@@ -76,8 +78,10 @@ document.body.addEventListener('click', (checkElem) => {
   if (isFavouriteButton) {
     const isLiked = checkElem.target.checked;
     const cityName = checkElem.target.parentElement.firstElementChild.textContent.trim();
+    checkElem.target.checked = false;
 
-    if (isLiked) {
+    if (isLiked && !ERROR_MESSAGES.includes(cityName)) {
+      checkElem.target.checked = true;
       favouriteCities.push(cityName);
       STORAGE_ACTIONS.saveFavouriteCities(favouriteCities);
       UI_ELEMENTS.HISTORY.insertAdjacentHTML('beforeend', createFavouriteElement(cityName));

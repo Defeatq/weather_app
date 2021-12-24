@@ -46,6 +46,13 @@ export function clearCityList(toRemove, list) {
 }
 
 export function renderNow(cityData) {
+  const isError = cityData instanceof Error;
+  if (isError) {
+    UI_ELEMENTS.TABS.NOW.TEMPERATURE.textContent = '0°';
+    UI_ELEMENTS.TABS.NOW.CITY_NAME.textContent = cityData.message;
+    return
+  }
+
   setStateFavourite(cityData.name)
   UI_ELEMENTS.TABS.NOW.TEMPERATURE.textContent = Math.round(cityData.main.temp) + '°';
   UI_ELEMENTS.TABS.NOW.WEATHER_ICON.style.backgroundImage = `url(${URLS.ICON_URL}${cityData.weather[0].icon}@4x.png)`;
@@ -103,6 +110,20 @@ function createForecastCard(date, temp, feel, weather, weatherIconId) {
 }
 
 export function renderDetails(cityData) {
+  const isError = cityData instanceof Error;
+  if (isError) {
+    UI_ELEMENTS.TABS.DETAILS.CITY_NAME.textContent = cityData.message;
+    UI_ELEMENTS.TABS.DETAILS.WEATHER_PROPERTIES.forEach(property => {
+      const propertyName = Array.from(property.childNodes)
+        .filter(propertyText => propertyText.nodeType === 3)
+        .map(propertyName => propertyName.textContent.trim())
+        .join('');
+  
+      property.textContent = propertyName;
+    })
+    return
+  }
+
   UI_ELEMENTS.TABS.DETAILS.CITY_NAME.textContent = cityData.name;
 
   UI_ELEMENTS.TABS.DETAILS.WEATHER_PROPERTIES.forEach(property => {
@@ -134,6 +155,13 @@ export function renderDetails(cityData) {
 }
 
 export function renderForecast(cityData) {
+  const isError = cityData instanceof Error;
+  if (isError) {
+    UI_ELEMENTS.TABS.FORECAST.CITY_NAME.textContent = cityData.message;
+    UI_ELEMENTS.TABS.FORECAST.TIMETABLE.textContent = '';
+    return
+  }
+
   UI_ELEMENTS.TABS.FORECAST.CITY_NAME.textContent = cityData.city.name;
   UI_ELEMENTS.TABS.FORECAST.TIMETABLE.textContent = '';
 
