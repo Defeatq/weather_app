@@ -1,4 +1,4 @@
-import { UI_ELEMENTS, createFavouriteElement, renderNow, renderDetails, createWeatherProperty, renderForecast } from './view.js';
+import { UI_ELEMENTS, createFavouriteElement, renderNow, renderDetails, renderForecast } from './view.js';
 import { getUrlByCity, getCityData, getForecastByCity } from './requests.js';
 
 export const favouriteCities = [];
@@ -32,13 +32,13 @@ export const STORAGE_ACTIONS = {
           UI_ELEMENTS.HISTORY.insertAdjacentHTML('beforeend', createFavouriteElement(city));
         });
         
-        renderNow(cityData.name, Math.round(cityData.main.temp), cityData.weather[0].icon);
-        renderDetails(cityData.name, Math.round(cityData.main.temp), Math.round(cityData.main['feels_like']), cityData.weather[0].main, cityData.sys.sunrise, cityData.sys.sunset);
+        renderNow(cityData);
+        renderDetails(cityData);
         UI_ELEMENTS.LOADER.style.display = 'none';
       })
       .then(getCityData(getForecastByCity(STORAGE_ACTIONS.getCurrentCity()))
         .then(cityData => {
-          renderForecast(cityData.city.name, cityData.list)
+          renderForecast(cityData)
         }))
   }
 }

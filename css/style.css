@@ -313,6 +313,7 @@ body {
 }
 .card__weather {
   max-width: 30%;
+  word-break: break-word;
   display: flex;
   flex-direction: column;
   align-items: flex-end;

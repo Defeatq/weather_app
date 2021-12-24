@@ -20,12 +20,17 @@ function removeFromFavourites(elem) {
   const cityName = storageCityItem.firstElementChild.textContent.trim();
 
   getCityData(getUrlByCity(cityName))
-    .then(data => {
+    .then(cityData => {
       deleteCityFromFavList(cityName);
-      renderNow(data.name, Math.round(data.main.temp), data.weather[0].icon);
-      renderDetails(data.name, Math.round(data.main.temp), Math.round(data.main['feels_like']), data.weather[0].main, data.sys.sunrise, data.sys.sunset);
+      renderNow(cityData);
+      renderDetails(cityData);
       storageCityItem.remove();
     });
+
+  getCityData(getForecastByCity(cityName))
+  .then(cityData => {
+    renderForecast(cityData)
+  })
 }
 
 UI_ELEMENTS.SEARCH_FORM.addEventListener('submit', event => {
@@ -35,31 +40,25 @@ UI_ELEMENTS.SEARCH_FORM.addEventListener('submit', event => {
   const cityData = getCityData(getUrlByCity(inputValue));
   const forecastData = getCityData(getForecastByCity(inputValue));
 
-  cityData.then((data => {
-    const cityName = data.name;
-    const temperature = Math.round(data.main.temp);
-    const weatherIconId = data.weather[0].icon;
-    const feelsLike = Math.round(data.main['feels_like']);
-    const weather = data.weather[0].main;
-    const sunrise = data.sys.sunrise; 
-    const sunset = data.sys.sunset;
+  cityData.then((cityData => {
+    const cityName = cityData.name;
     
-    renderNow(cityName, temperature, weatherIconId);
-    renderDetails(cityName, temperature, feelsLike, weather, sunrise, sunset);
+    renderNow(cityData);
+    renderDetails(cityData);
     STORAGE_ACTIONS.setCurrentCity(cityName);
   }))
   .catch(errorData => {
     alert(errorData.message);
-    renderNow(errorData.message, '0');
-    renderDetails(errorData.message);
+    renderNow(new Error('No such city'), '0');
+    renderDetails(new Error('No such city'));
   });
 
   forecastData.then(cityData => {
-    renderForecast(cityData.city.name, cityData.list);
+    renderForecast(cityData);
   })
   .catch(errorData => {
     alert(errorData.message);
-    renderForecast(errorData.message, []);
+    renderForecast(new Error('No such city'), []);
   })
 
   event.target.firstElementChild.value = '';
@@ -94,14 +93,14 @@ document.body.addEventListener('click', (checkElem) => {
 
     getCityData(getUrlByCity(cityName))
       .then(cityData => {
-        renderNow(cityData.name, Math.round(cityData.main.temp), cityData.weather[0].icon);
-        renderDetails(cityData.name, Math.round(cityData.main.temp), Math.round(cityData.main['feels_like']), cityData.weather[0].main, cityData.sys.sunrise, cityData.sys.sunset);
+        renderNow(cityData);
+        renderDetails(cityData);
         STORAGE_ACTIONS.setCurrentCity(cityData.name);
       })
 
     getCityData(getForecastByCity(cityName))
       .then(cityData => {
-        renderForecast(cityData.city.name, cityData.list)
+        renderForecast(cityData)
       })
   }
 });

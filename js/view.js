@@ -45,11 +45,11 @@ export function clearCityList(toRemove, list) {
   })
 }
 
-export function renderNow(cityName, temperature, weatherIconId = `url(icon/icons8-cloud-961.svg)`) {
-  setStateFavourite(cityName)
-  UI_ELEMENTS.TABS.NOW.TEMPERATURE.textContent = temperature + '°';
-  UI_ELEMENTS.TABS.NOW.WEATHER_ICON.style.backgroundImage = `url(${URLS.ICON_URL}${weatherIconId}@4x.png)`;
-  UI_ELEMENTS.TABS.NOW.CITY_NAME.textContent = cityName;
+export function renderNow(cityData) {
+  setStateFavourite(cityData.name)
+  UI_ELEMENTS.TABS.NOW.TEMPERATURE.textContent = Math.round(cityData.main.temp) + '°';
+  UI_ELEMENTS.TABS.NOW.WEATHER_ICON.style.backgroundImage = `url(${URLS.ICON_URL}${cityData.weather[0].icon}@4x.png)`;
+  UI_ELEMENTS.TABS.NOW.CITY_NAME.textContent = cityData.name;
 }
 
 export function setStateFavourite(cityName) {
@@ -67,7 +67,7 @@ export function createFavouriteElement(cityName) {
           </div>`
 }
 
-export function createWeatherProperty(propertyValue) {
+function createWeatherProperty(propertyValue) {
   return `<span class="details__parameter-value">
             ${propertyValue}
           </span>`
@@ -102,8 +102,8 @@ function createForecastCard(date, temp, feel, weather, weatherIconId) {
           </div>`
 }
 
-export function renderDetails(cityName, temp, feel, weather, sunrise, sunset) {
-  UI_ELEMENTS.TABS.DETAILS.CITY_NAME.textContent = cityName;
+export function renderDetails(cityData) {
+  UI_ELEMENTS.TABS.DETAILS.CITY_NAME.textContent = cityData.name;
 
   UI_ELEMENTS.TABS.DETAILS.WEATHER_PROPERTIES.forEach(property => {
     const propertyName = Array.from(property.childNodes)
@@ -115,29 +115,29 @@ export function renderDetails(cityName, temp, feel, weather, sunrise, sunset) {
 
     switch (propertyName.slice(0, -1)) {
       case WEATHER_PROPERTIES.TEMPERATURE:
-        property.insertAdjacentHTML('beforeend', createWeatherProperty(temp + '°'))
+        property.insertAdjacentHTML('beforeend', createWeatherProperty(Math.round(cityData.main.temp) + '°'))
         return
       case WEATHER_PROPERTIES.FEELS_LIKE:
-        property.insertAdjacentHTML('beforeend', createWeatherProperty(feel + '°'))
+        property.insertAdjacentHTML('beforeend', createWeatherProperty(Math.round(cityData.main['feels_like']) + '°'))
         return
       case WEATHER_PROPERTIES.WEATHER:
-        property.insertAdjacentHTML('beforeend', createWeatherProperty(weather))
+        property.insertAdjacentHTML('beforeend', createWeatherProperty(cityData.weather[0].main))
         return
       case WEATHER_PROPERTIES.SUNRISE:
-        property.insertAdjacentHTML('beforeend', createWeatherProperty(`${convertUnixTime(sunrise).hours}:${convertUnixTime(sunrise).minutes}`))
+        property.insertAdjacentHTML('beforeend', createWeatherProperty(`${convertUnixTime(cityData.sys.sunrise).hours}:${convertUnixTime(cityData.sys.sunrise).minutes}`))
         return
       case WEATHER_PROPERTIES.SUNSET:
-        property.insertAdjacentHTML('beforeend', createWeatherProperty(`${convertUnixTime(sunset).hours}:${convertUnixTime(sunset).minutes}`))
+        property.insertAdjacentHTML('beforeend', createWeatherProperty(`${convertUnixTime(cityData.sys.sunset).hours}:${convertUnixTime(cityData.sys.sunset).minutes}`))
         return
     }
   })
 }
 
-export function renderForecast(cityName, forecastList) {
-  UI_ELEMENTS.TABS.FORECAST.CITY_NAME.textContent = cityName;
+export function renderForecast(cityData) {
+  UI_ELEMENTS.TABS.FORECAST.CITY_NAME.textContent = cityData.city.name;
   UI_ELEMENTS.TABS.FORECAST.TIMETABLE.textContent = '';
 
-  forecastList.forEach(forecast => {
+  cityData.list.forEach(forecast => {
     const forecastCard = createForecastCard(forecast.dt, Math.round(forecast.main.temp), Math.round(forecast.main['feels_like']), forecast.weather[0].main, forecast.weather[0].icon);
     UI_ELEMENTS.TABS.FORECAST.TIMETABLE.insertAdjacentHTML('beforeend', forecastCard);
   })

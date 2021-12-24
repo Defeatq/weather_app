@@ -7,8 +7,8 @@ export function getCityData(url) {
       .then(urlContent => {
         checkErrorCode(urlContent.cod) ? resolve(urlContent) : reject(urlContent)
       })
-      .catch(error => {
-        alert(error.message)
+      .catch(() => {
+        alert(new Error('Failed to connect').message)
       });
   });
 };
