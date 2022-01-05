@@ -18,14 +18,17 @@ export const STORAGE_ACTIONS = {
   },
   loadStorage: function() {
     UI_ELEMENTS.LOADER.style.display = 'block';
-    const isPrevCityExist = STORAGE_ACTIONS.getCurrentCity() !== null;
+    const isPrevCityExist = this.getCurrentCity() !== null;
+    const isFavouriteInit = this.getFavouriteCities() !== null;
 
-    if (!isPrevCityExist) {
+    if (!isPrevCityExist ||
+        !isFavouriteInit) {
+      this.saveFavouriteCities(favouriteCities);
       UI_ELEMENTS.LOADER.style.display = 'none';
       return
     }
 
-    getCityData(getUrlByCity(STORAGE_ACTIONS.getCurrentCity()))
+    getCityData(getUrlByCity(this.getCurrentCity()))
       .then(cityData => {
         this.getFavouriteCities().forEach(city => {
           favouriteCities.push(city);
@@ -36,7 +39,7 @@ export const STORAGE_ACTIONS = {
         renderDetails(cityData);
         UI_ELEMENTS.LOADER.style.display = 'none';
       })
-      .then(getCityData(getForecastByCity(STORAGE_ACTIONS.getCurrentCity()))
+      .then(getCityData(getForecastByCity(this.getCurrentCity()))
         .then(cityData => {
           renderForecast(cityData)
         }))
