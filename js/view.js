@@ -81,15 +81,15 @@ function createWeatherProperty(propertyValue) {
 }
 
 function createForecastCard(date, temp, feel, weather, weatherIconId) {
-  const dateInfo = convertUnixTime(date)
+  const {hours, minutes, month, day} = convertUnixTime(date)
 
   return `<div class="forecast__card">
             <div class="card__moment">
               <div class="card__date font-style">
-                ${dateInfo.day} ${dateInfo.month}
+                ${day} ${month}
               </div>
               <div class="card__time font-style">
-                ${dateInfo.hours}:${dateInfo.minutes}
+                ${hours}:${minutes}
               </div>
             </div>
             <div class="card__details">
