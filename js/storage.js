@@ -1,14 +1,14 @@
 import { UI_ELEMENTS, createFavouriteElement, renderNow, renderDetails, renderForecast } from './view.js';
 import { getUrlByCity, getCityData, getForecastByCity } from './requests.js';
 
-export const favouriteCities = [];
+export const favouriteCities = new Set();
 
 export const STORAGE_ACTIONS = {
   saveFavouriteCities: function(cityList) {
-    localStorage.setItem('favouriteCities', JSON.stringify(cityList));
+    localStorage.setItem('favouriteCities', JSON.stringify([...cityList]));
   },
   getFavouriteCities: function() {
-    return JSON.parse(localStorage.getItem('favouriteCities'))
+    return new Set(JSON.parse(localStorage.getItem('favouriteCities')))
   },
   setCurrentCity: function(cityName) {
     localStorage.setItem('currentCity', cityName);
@@ -31,7 +31,7 @@ export const STORAGE_ACTIONS = {
     getCityData(getUrlByCity(this.getCurrentCity()))
       .then(cityData => {
         this.getFavouriteCities().forEach(city => {
-          favouriteCities.push(city);
+          favouriteCities.add(city);
           UI_ELEMENTS.HISTORY.insertAdjacentHTML('beforeend', createFavouriteElement(city));
         });
         

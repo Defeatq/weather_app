@@ -53,16 +53,14 @@ export function renderNow(cityData) {
     return
   }
 
-  setStateFavourite(cityData.name)
+  setFavouriteState(cityData.name)
   UI_ELEMENTS.TABS.NOW.TEMPERATURE.textContent = Math.round(cityData.main.temp) + '°';
   UI_ELEMENTS.TABS.NOW.WEATHER_ICON.style.backgroundImage = `url(${URLS.ICON_URL}${cityData.weather[0].icon}@4x.png)`;
   UI_ELEMENTS.TABS.NOW.CITY_NAME.textContent = cityData.name;
 }
 
-export function setStateFavourite(cityName) {
-  const isCityInFavList = favouriteCities.includes(cityName)
-
-  isCityInFavList ? UI_ELEMENTS.TABS.NOW.FAVOURITE_BUTTON.checked = true : UI_ELEMENTS.TABS.NOW.FAVOURITE_BUTTON.checked = false;
+export function setFavouriteState(cityName) {
+  UI_ELEMENTS.TABS.NOW.FAVOURITE_BUTTON.checked = favouriteCities.has(cityName);
 }
 
 export function createFavouriteElement(cityName) {

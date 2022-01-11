@@ -1,4 +1,4 @@
-import { UI_ELEMENTS, renderNow, createFavouriteElement, setStateFavourite, renderDetails, clearCityList, renderForecast } from "./view.js";
+import { UI_ELEMENTS, renderNow, createFavouriteElement, renderDetails, clearCityList, renderForecast } from "./view.js";
 import { favouriteCities, STORAGE_ACTIONS } from "./storage.js";
 import { getUrlByCity, getCityData, getForecastByCity } from './requests.js';
 
@@ -11,9 +11,7 @@ function getClickedPlace(elem, className) {
 }
 
 function deleteCityFromFavList(cityName) {
-  const cityIdStorage = favouriteCities.indexOf(cityName);
-  favouriteCities.splice(cityIdStorage, 1);
-
+  favouriteCities.delete(cityName);
   STORAGE_ACTIONS.saveFavouriteCities(favouriteCities);
 }
 
@@ -82,7 +80,7 @@ document.body.addEventListener('click', (checkElem) => {
 
     if (isLiked && !ERROR_MESSAGES.includes(cityName)) {
       checkElem.target.checked = true;
-      favouriteCities.push(cityName);
+      favouriteCities.add(cityName);
       STORAGE_ACTIONS.saveFavouriteCities(favouriteCities);
       UI_ELEMENTS.HISTORY.insertAdjacentHTML('beforeend', createFavouriteElement(cityName));
     } else {
