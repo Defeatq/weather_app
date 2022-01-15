@@ -1,6 +1,7 @@
-import { favouriteCities } from "./storage.js";
+import { favouriteCitiesStorage } from "./storage.js";
 import { URLS } from "./urls.js";
 import { convertUnixTime } from "./time_converter.js";
+import { getUrlByCity } from "./requests.js";
 
 const WEATHER_PROPERTIES = {
   TEMPERATURE: 'Temperature',
@@ -31,7 +32,7 @@ export const UI_ELEMENTS = {
       TIMETABLE: document.querySelector('.forecast__timetable'),
     },
   },
-  HISTORY: document.querySelector('.history__list'),
+  FAVOURITE_LIST: document.querySelector('.history__list'),
 }
 
 export function clearCityList(toRemove, list) {
@@ -60,7 +61,7 @@ export function renderNow(cityData) {
 }
 
 export function setFavouriteState(cityName) {
-  UI_ELEMENTS.TABS.NOW.FAVOURITE_BUTTON.checked = favouriteCities.has(cityName);
+  UI_ELEMENTS.TABS.NOW.FAVOURITE_BUTTON.checked = favouriteCitiesStorage.hasCity(cityName);
 }
 
 export function createFavouriteElement(cityName) {
@@ -167,4 +168,4 @@ export function renderForecast(cityData) {
     const forecastCard = createForecastCard(forecast.dt, Math.round(forecast.main.temp), Math.round(forecast.main['feels_like']), forecast.weather[0].main, forecast.weather[0].icon);
     UI_ELEMENTS.TABS.FORECAST.TIMETABLE.insertAdjacentHTML('beforeend', forecastCard);
   })
-}
+};

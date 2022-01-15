@@ -14,13 +14,11 @@ export function getCityData(url) {
 };
 
 export function getUrlByCity(cityName) {
-  const url = `${URLS.WEATHER_URL.SERVER_URL}?q=${cityName}&appid=${URLS.WEATHER_URL.API_KEY}`;
-  return url
+  return `${URLS.WEATHER_URL.SERVER_URL}?q=${cityName}&appid=${URLS.WEATHER_URL.API_KEY}`
 }
 
 export function getForecastByCity(cityName) {
-  const url = `${URLS.FORECAST_URL.SERVER_URL}?q=${cityName}&appid=${URLS.FORECAST_URL.API_KEY}`;
-  return url
+  return `${URLS.FORECAST_URL.SERVER_URL}?q=${cityName}&appid=${URLS.FORECAST_URL.API_KEY}`
 }
 
 export function checkErrorCode(code) {

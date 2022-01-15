@@ -1,18 +1,13 @@
 import { UI_ELEMENTS, renderNow, createFavouriteElement, renderDetails, clearCityList, renderForecast } from "./view.js";
-import { favouriteCities, STORAGE_ACTIONS } from "./storage.js";
+import { favouriteCitiesStorage, LOCAL_STORAGE_ACTIONS } from "./storage.js";
 import { getUrlByCity, getCityData, getForecastByCity } from './requests.js';
 
-STORAGE_ACTIONS.loadStorage();
+LOCAL_STORAGE_ACTIONS.loadStorage();
 
 const ERROR_MESSAGES = ['No such city', 'City name'];
 
-function getClickedPlace(elem, className) {
+function checkClickedPlace(elem, className) {
   return elem.target.classList.contains(className)
-}
-
-function deleteCityFromFavList(cityName) {
-  favouriteCities.delete(cityName);
-  STORAGE_ACTIONS.saveFavouriteCities(favouriteCities);
 }
 
 function removeFromFavourites(elem) {
@@ -21,7 +16,7 @@ function removeFromFavourites(elem) {
 
   getCityData(getUrlByCity(cityName))
     .then(cityData => {
-      deleteCityFromFavList(cityName);
+      favouriteCitiesStorage.deleteCity(cityName);
       renderNow(cityData);
       renderDetails(cityData);
       storageCityItem.remove();
@@ -41,11 +36,9 @@ UI_ELEMENTS.SEARCH_FORM.addEventListener('submit', event => {
   const forecastData = getCityData(getForecastByCity(inputValue));
 
   cityData.then((cityData => {
-    const cityName = cityData.name;
-    
     renderNow(cityData);
     renderDetails(cityData);
-    STORAGE_ACTIONS.setCurrentCity(cityName);
+    LOCAL_STORAGE_ACTIONS.setCurrentCity(cityData.name);
   }))
   .catch(errorData => {
     alert(errorData.message);
@@ -58,16 +51,16 @@ UI_ELEMENTS.SEARCH_FORM.addEventListener('submit', event => {
   })
   .catch(errorData => {
     alert(errorData.message);
-    renderForecast(new Error('No such city'), []);
+    renderForecast(new Error('No such city'));
   })
 
   event.target.firstElementChild.value = '';
 });
 
 document.body.addEventListener('click', (checkElem) => {
-  const isDeleteButton = getClickedPlace(checkElem, 'history__close')
-  const isFavouriteButton = getClickedPlace(checkElem, 'now__favourite');
-  const isSavedCity = getClickedPlace(checkElem, 'history__text');
+  const isDeleteButton = checkClickedPlace(checkElem, 'history__close')
+  const isFavouriteButton = checkClickedPlace(checkElem, 'now__favourite');
+  const isSavedCity = checkClickedPlace(checkElem, 'history__text');
 
   if (isDeleteButton) {
     removeFromFavourites(checkElem);
@@ -80,13 +73,11 @@ document.body.addEventListener('click', (checkElem) => {
 
     if (isLiked && !ERROR_MESSAGES.includes(cityName)) {
       checkElem.target.checked = true;
-      favouriteCities.add(cityName);
-      STORAGE_ACTIONS.saveFavouriteCities(favouriteCities);
-      UI_ELEMENTS.HISTORY.insertAdjacentHTML('beforeend', createFavouriteElement(cityName));
+      favouriteCitiesStorage.addCity(cityName);
     } else {
-      const historyList = document.querySelectorAll('.history__text');
-      deleteCityFromFavList(cityName);
-      clearCityList(cityName, historyList)
+      const favouriteList = document.querySelectorAll('.history__text');
+      favouriteCitiesStorage.deleteCity(cityName);
+      clearCityList(cityName, favouriteList)
     }
   }
 
@@ -97,7 +88,7 @@ document.body.addEventListener('click', (checkElem) => {
       .then(cityData => {
         renderNow(cityData);
         renderDetails(cityData);
-        STORAGE_ACTIONS.setCurrentCity(cityData.name);
+        LOCAL_STORAGE_ACTIONS.setCurrentCity(cityData.name);
       })
 
     getCityData(getForecastByCity(cityName))
