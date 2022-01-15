@@ -2,23 +2,27 @@ import { UI_ELEMENTS, createFavouriteElement, renderNow, renderDetails, renderFo
 import { getUrlByCity, getCityData, getForecastByCity } from './requests.js';
 
 export const favouriteCitiesStorage = new Storage();
-
+// Constructor
+function Favourite(cityName) {
+  this.name = cityName;
+}
+// Set
 function Storage() {
   this.cities = new Set();
 
   this.deleteCity = function(cityName) {
-    this.cities.delete(cityName);
+    this.cities.delete([...this.cities].find(city => city.name === cityName));
     LOCAL_STORAGE_ACTIONS.saveFavouriteCities(this.cities);
   }
   
   this.addCity = function(cityName) {
-    this.cities.add(cityName);
+    this.cities.add(new Favourite(cityName));
     LOCAL_STORAGE_ACTIONS.saveFavouriteCities(this.cities);
     UI_ELEMENTS.FAVOURITE_LIST.insertAdjacentHTML('beforeend', createFavouriteElement(cityName));
   }
 
   this.hasCity = function(cityName) {
-    return this.cities.has(cityName)
+    return this.cities.has([...this.cities].find(city => city.name === cityName))
   }
 }
 
@@ -50,7 +54,7 @@ export const LOCAL_STORAGE_ACTIONS = {
     getCityData(getUrlByCity(this.getCurrentCity()))
       .then(cityData => {
         this.getFavouriteCities().forEach(city => {
-          favouriteCitiesStorage.addCity(city)
+          favouriteCitiesStorage.addCity(city.name)
         });
         
         renderNow(cityData);
