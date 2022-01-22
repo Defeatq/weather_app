@@ -1,7 +1,7 @@
 import { favouriteCitiesStorage } from "./storage.js";
 import { URLS } from "./urls.js";
 import { convertUnixTime } from "./time_converter.js";
-import { getUrlByCity } from "./requests.js";
+import { recursiveForEach } from "./helpers.js";
 
 const WEATHER_PROPERTIES = {
   TEMPERATURE: 'Temperature',
@@ -36,7 +36,7 @@ export const UI_ELEMENTS = {
 }
 
 export function clearCityList(toRemove, list) {
-  list.forEach((city) => {
+  recursiveForEach(list, (city) => {
     const currentCityName = city.textContent.trim();
 
     if (currentCityName === toRemove) {
@@ -164,7 +164,7 @@ export function renderForecast(cityData) {
   UI_ELEMENTS.TABS.FORECAST.CITY_NAME.textContent = cityData.city.name;
   UI_ELEMENTS.TABS.FORECAST.TIMETABLE.textContent = '';
 
-  cityData.list.forEach(forecast => {
+  recursiveForEach(cityData.list, forecast => {
     const forecastCard = createForecastCard(forecast.dt, Math.round(forecast.main.temp), Math.round(forecast.main['feels_like']), forecast.weather[0].main, forecast.weather[0].icon);
     UI_ELEMENTS.TABS.FORECAST.TIMETABLE.insertAdjacentHTML('beforeend', forecastCard);
   })

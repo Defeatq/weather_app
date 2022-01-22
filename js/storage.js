@@ -1,5 +1,6 @@
 import { UI_ELEMENTS, createFavouriteElement, renderNow, renderDetails, renderForecast } from './view.js';
 import { getUrlByCity, getCityData, getForecastByCity } from './requests.js';
+import { recursiveForEach } from './helpers.js';
 
 export const favouriteCitiesStorage = new Storage();
 // Constructor
@@ -53,7 +54,7 @@ export const LOCAL_STORAGE_ACTIONS = {
 
     getCityData(getUrlByCity(this.getCurrentCity()))
       .then(cityData => {
-        this.getFavouriteCities().forEach(city => {
+        recursiveForEach(this.getFavouriteCities(), city => {
           favouriteCitiesStorage.addCity(city.name)
         });
         
