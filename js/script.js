@@ -25,7 +25,9 @@ function removeFromFavourites(elem) {
   getCityData(getForecastByCity(cityName))
   .then(cityData => {
     renderForecast(cityData)
-  })
+  });
+
+  LOCAL_STORAGE_ACTIONS.setCurrentCity(cityName);
 }
 
 UI_ELEMENTS.SEARCH_FORM.addEventListener('submit', event => {

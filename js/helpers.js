@@ -1,12 +1,10 @@
 export function recursiveForEach(iterable, callback) {
-  const array = formatArray(iterable);
+  const array = [...iterable];
 
-  if (array[0]) {
-    callback(array[0]);
-    recursiveForEach(array.splice(1), callback);
+  if (!array[0]) {
+    return
   }
-}
 
-export function formatArray(iterable) {
-  return [...iterable]
+  callback(array[0]);
+  recursiveForEach(array.splice(1), callback);
 }
