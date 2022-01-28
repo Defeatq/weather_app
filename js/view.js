@@ -1,7 +1,7 @@
 import { favouriteCitiesStorage } from "./storage.js";
 import { URLS } from "./urls.js";
 import { convertUnixTime } from "./time_converter.js";
-import { recursiveForEach } from "./helpers.js";
+import { recursiveForEach } from "./helpers/helpers.js";
 
 const WEATHER_PROPERTIES = {
   TEMPERATURE: 'Temperature',
