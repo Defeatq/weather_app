@@ -1,6 +1,7 @@
 import { UI_ELEMENTS, createFavouriteElement, renderNow, renderDetails, renderForecast } from './view.js';
 import { getUrlByCity, getCityData, getForecastByCity } from './requests.js';
 import { recursiveForEach } from './helpers/helpers.js';
+import { Cookie } from './cookie.js';
 
 export const favouriteCitiesStorage = new Storage();
 // Constructor

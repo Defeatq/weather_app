@@ -1,6 +1,7 @@
 import { UI_ELEMENTS, renderNow, createFavouriteElement, renderDetails, clearCityList, renderForecast } from "./view.js";
 import { favouriteCitiesStorage, LOCAL_STORAGE_ACTIONS } from "./storage.js";
 import { getUrlByCity, getCityData, getForecastByCity } from './requests.js';
+import { Cookie } from './cookie.js';
 
 LOCAL_STORAGE_ACTIONS.loadStorage();
 
@@ -28,6 +29,9 @@ function removeFromFavourites(elem) {
   });
 
   LOCAL_STORAGE_ACTIONS.setCurrentCity(cityName);
+  Cookie.setCookie('currentCity', cityName, {
+    'max-age': 3600,
+  });
 }
 
 UI_ELEMENTS.SEARCH_FORM.addEventListener('submit', event => {
@@ -41,6 +45,9 @@ UI_ELEMENTS.SEARCH_FORM.addEventListener('submit', event => {
     renderNow(cityData);
     renderDetails(cityData);
     LOCAL_STORAGE_ACTIONS.setCurrentCity(cityData.name);
+    Cookie.setCookie('currentCity', cityData.name, {
+      'max-age': 3600,
+    });
   }))
   .catch(errorData => {
     alert(errorData.message);
@@ -91,6 +98,9 @@ document.body.addEventListener('click', (checkElem) => {
         renderNow(cityData);
         renderDetails(cityData);
         LOCAL_STORAGE_ACTIONS.setCurrentCity(cityData.name);
+        Cookie.setCookie('currentCity', cityData.name, {
+          'max-age': 3600,
+        });
       })
 
     getCityData(getForecastByCity(cityName))
